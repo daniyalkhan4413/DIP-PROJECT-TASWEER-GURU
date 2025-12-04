@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tasweer GURU — Editor</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Cropper.js -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+    }
+
+    .panel {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      color: #333;
+    }
+
+    h3 {
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: #2575fc;
+      text-align: center;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #e9ecef;
+      background: #f7f9fc;
+    }
+
+    .controls .form-range {
+      width: 100%;
+    }
+
+    .filter-btn {
+      border-radius: 50px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: #ee0979;
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      color: #fff;
+      border: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .btn-outline-secondary, .btn-outline-dark, .btn-outline-success {
+      border-radius: 50px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      border: none;
+      border-radius: 50px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .btn-outline-success {
+      border-radius: 50px;
+      transition: transform 0.2s;
+    }
+
+    .btn-outline-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .panel label {
+      font-weight: 600;
+    }
+
+    #empty {
+      font-style: italic;
+      color: #999;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .panel { padding: 20px; margin: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h3>IMAGE GURU — EDIT YOUR PHOTOS</h3>
+
+    <div class="row g-3">
+
+      <!-- Left: Image Upload + Cropper -->
+      <div class="col-md-6">
+        <label class="form-label">Upload Image</label>
+        <input id="inputImage" type="file" accept="image/*" class="form-control mb-2" />
+
+        <div style="width:100%;height:420px;display:flex;align-items:center;justify-content:center;border-radius:12px;overflow:hidden;background:#f7f9fc">
+          <img id="image" src="" alt="Upload an image" style="max-width:100%; display:none; border-radius:12px;">
+          <div id="empty">No image loaded</div>
+        </div>
+
+        <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
+          <button id="rotateLeft" class="btn btn-outline-secondary btn-sm">⟲ Rotate</button>
+          <button id="rotateRight" class="btn btn-outline-secondary btn-sm">⟳ Rotate</button>
+          <button id="resetCrop" class="btn btn-outline-secondary btn-sm">Reset Crop</button>
+          <button id="fit" class="btn btn-outline-secondary btn-sm">Fit</button>
+        </div>
+      </div>
+
+      <!-- Right: Filters + Preview + Controls -->
+      <div class="col-md-6">
+
+        <!-- Filter Bar -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Filters</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-outline-dark btn-sm filter-btn active" data-filter="">None</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="gray">Gray</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="blur">Blur</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="canny">Canny</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="sepia">Sepia</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="invert">Invert</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="sharpen">Sharpen</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="threshold">Threshold</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="bright_contrast">Bright/Contrast</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="cartoon">Cartoon</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="sketch">Sketch</button>
+            <button class="btn btn-outline-dark btn-sm filter-btn" data-filter="rotate">Rotate</button>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="mb-3">
+          <label class="form-label">Preview</label>
+          <canvas id="previewCanvas" class="preview"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+
+          <div class="mb-2">
+            <label class="form-label">Brightness (<span id="brightnessVal">0</span>)</label>
+            <input id="brightness" type="range" min="-100" max="100" value="0" class="form-range"/>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Contrast (<span id="contrastVal">1.00</span>)</label>
+            <input id="contrast" type="range" min="50" max="200" value="100" class="form-range"/>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Gaussian Blur px (<span id="blurVal">0</span>)</label>
+            <input id="blur" type="range" min="0" max="21" value="0" step="2" class="form-range"/>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Sharpen (0–5)</label>
+            <input id="sharpen" type="range" min="0" max="5" value="0" class="form-range"/>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label">Threshold</label>
+            <input id="threshold" type="range" min="0" max="255" value="0" class="form-range"/>
+          </div>
+
+          <div class="d-flex gap-3 mt-3 justify-content-center">
+            <button id="sendServer" class="btn btn-primary">Process on Server</button>
+            <button id="downloadBtn" class="btn btn-outline-success">Download</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <script>
+    const inputImage = document.getElementById('inputImage');
+    const image = document.getElementById('image');
+    const empty = document.getElementById('empty');
+    const previewCanvas = document.getElementById('previewCanvas');
+    const ctx = previewCanvas.getContext('2d');
+
+    const brightness = document.getElementById('brightness');
+    const contrast = document.getElementById('contrast');
+    const blur = document.getElementById('blur');
+    const sharpen = document.getElementById('sharpen');
+    const threshold = document.getElementById('threshold');
+    const sendServer = document.getElementById('sendServer');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    const brightnessVal = document.getElementById('brightnessVal');
+    const contrastVal = document.getElementById('contrastVal');
+    const blurVal = document.getElementById('blurVal');
+
+    let cropper = null;
+    let selectedFilter = "";
+
+    // -------------- FILTER BUTTONS -----------------
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        selectedFilter = btn.dataset.filter;
+
+        drawPreview();
+      });
+    });
+
+    // Update slider labels
+    function updateLabels(){
+      brightnessVal.textContent = brightness.value;
+      contrastVal.textContent = (contrast.value / 100).toFixed(2);
+      blurVal.textContent = blur.value;
+    }
+
+    inputImage.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+
+      const url = URL.createObjectURL(file);
+      image.src = url;
+      image.style.display = 'block';
+      empty.style.display = 'none';
+
+      if(cropper) cropper.destroy();
+      cropper = new Cropper(image, { autoCropArea:0.9 });
+
+      image.onload = () => {
+        previewCanvas.width = Math.min(640, image.naturalWidth);
+        previewCanvas.height = Math.min(480, image.naturalHeight);
+        drawPreview();
+      };
+    });
+
+    // Cropper actions
+    document.getElementById('rotateLeft').onclick = () => cropper.rotate(-90);
+    document.getElementById('rotateRight').onclick = () => cropper.rotate(90);
+    document.getElementById('resetCrop').onclick = () => cropper.reset();
+    document.getElementById('fit').onclick = () => cropper.clear();
+
+    // ------------ PREVIEW --------------
+    function drawPreview(){
+      if(!cropper) return;
+      const canvas = cropper.getCroppedCanvas({ maxWidth: 1024, maxHeight: 1024 });
+
+      previewCanvas.width = canvas.width;
+      previewCanvas.height = canvas.height;
+
+      ctx.drawImage(canvas, 0, 0);
+
+      let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      // apply brightness/contrast/threshold
+      applyClientSideOps(imgData);
+
+      // apply quick preview of basic filters
+      applyFilterPreview(imgData);
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+
+    function applyClientSideOps(imgData){
+      const d = imgData.data;
+      const b = parseInt(brightness.value,10);
+      const c = parseFloat(contrast.value) / 100;
+      const th = parseInt(threshold.value,10);
+
+      for(let i=0;i<d.length;i+=4){
+        for(let ch=0; ch<3; ch++){
+          let val = d[i+ch];
+          val = (val - 128) * c + 128 + b;
+          d[i+ch] = Math.max(0, Math.min(255, val));
+        }
+
+        if(th > 0){
+          let gray = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+          let px = gray > th ? 255 : 0;
+          d[i] = d[i+1] = d[i+2] = px;
+        }
+      }
+    }
+
+
+    function applyFilterPreview(imgData){
+      const d = imgData.data;
+
+      if(selectedFilter === "gray"){
+        for(let i=0;i<d.length;i+=4){
+          let g = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+          d[i]=d[i+1]=d[i+2]=g;
+        }
+      }
+
+      if(selectedFilter === "invert"){
+        for(let i=0;i<d.length;i+=4){
+          d[i] = 255 - d[i];
+          d[i+1] = 255 - d[i+1];
+          d[i+2] = 255 - d[i+2];
+        }
+      }
+    }
+
+    // slider triggers
+    [brightness, contrast, blur, sharpen, threshold].forEach(el=>{
+      el.addEventListener("input", ()=>{ updateLabels(); drawPreview(); });
+    });
+    updateLabels();
+
+    // download
+    downloadBtn.onclick = ()=>{
+      const link = document.createElement('a');
+      link.href = previewCanvas.toDataURL("image/png");
+      link.download = "edited.png";
+      link.click();
+    };
+
+    // --------------- SEND TO SERVER ---------------
+    sendServer.onclick = async ()=>{
+
+      if(!cropper){ alert("Upload an image first"); return; }
+
+      const canvas = cropper.getCroppedCanvas({ maxWidth:1600, maxHeight:1600 });
+
+      canvas.toBlob(async (blob)=>{
+        const form = new FormData();
+        form.append("image", blob, "crop.png");
+
+        form.append("brightness", brightness.value);
+        form.append("contrast", contrast.value);
+        form.append("blur", blur.value);
+        form.append("sharpen", sharpen.value);
+        form.append("threshold", threshold.value);
+        form.append("filter_type", selectedFilter);
+
+        const csrftoken = document.cookie
+          .split("; ")
+          .find(row => row.startsWith("csrftoken="))
+          ?.split("=")[1];
+
+        const resp = await fetch("{% url 'process_image' %}", {
+          method:"POST",
+          headers:{
+            "X-CSRFToken":csrftoken,
+          },
+          body:form
+        });
+
+        const data = await resp.json();
+
+        const img = new Image();
+        img.src = data.processed_image_base64;
+        img.onload = ()=>{
+          previewCanvas.width = img.width;
+          previewCanvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+        };
+      },"image/png",0.95);
+    };
+
+  </script>
+
+</body>
+</html>

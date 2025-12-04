@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasweer GURU</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* --- Global --- */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #fff;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.2);
+    }
+
+    .btn-start {
+      font-size: 1.2rem;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      background: #ff6a00;
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      color: #fff;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .btn-start:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /* --- Features Section --- */
+    .features {
+      padding: 80px 20px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .features h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2575fc;
+    }
+
+    .features p {
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .feature-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: #f7f9fc;
+      border-radius: 15px;
+      padding: 30px;
+      flex: 1 1 250px;
+      max-width: 300px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 15px;
+      color: #6a11cb;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    /* --- Footer --- */
+    footer {
+      background: #2575fc;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div>
+      <h1>Tasweer GURU</h1>
+      <p>Your ultimate online photo editor. Enhance, filter, and transform your images instantly.</p>
+      <a href="/editor/" class="btn btn-start">Get Started</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <h2>Powerful Features</h2>
+    <p>Explore a wide range of editing tools and pre-built filters designed to make your photos shine.</p>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <h3>Pre-Built Filters</h3>
+        <p>Apply creative filters like sepia, sketch, cartoon, vintage, and more with a single click.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Brightness & Contrast</h3>
+        <p>Adjust your image lighting and contrast to make every detail pop.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Blur & Sharpen</h3>
+        <p>Refine or soften your images easily to get the perfect effect.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Sketch & Cartoonify</h3>
+        <p>Transform your photos into art-like sketches or cartoon versions instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Tasweer GURU. All Rights Reserved.
+  </footer>
+
+</body>
+</html>
